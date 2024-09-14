@@ -3,7 +3,7 @@
 #include "ports.h"
 
 // Gerencia quando o vermelho será aceso
-void PedSemaphore::handle_red() {
+void SemaPed::handle_red() {
   // Checa se o ciclo está no intervalo (0s - 12s)
   if (millis() - start_red < 12000) 
     digitalWrite(PED_RED, HIGH);
@@ -13,7 +13,7 @@ void PedSemaphore::handle_red() {
 }
 
 // Gerencia quando o verde será aceso
-void PedSemaphore::handle_green() {
+void SemaPed::handle_green() {
   // Checa se o ciclo está no intervalo (12s - 32s)
   if (millis() - start_green > 12000 && millis() - start_green < 32000)
     digitalWrite(PED_GREEN, HIGH);
@@ -23,7 +23,7 @@ void PedSemaphore::handle_green() {
 }
 
 // Faz o azul piscar numa frequência de 2Hz
-void PedSemaphore::blink_blue() {
+void SemaPed::blink_blue() {
   // Checa se o período chegou ao fim (T = 0.5s)
   if (millis() - period_blue > 500) {
     // Se o azul estiver desligado, ele é ligado e a flag é ativada
@@ -42,7 +42,7 @@ void PedSemaphore::blink_blue() {
 }
 
 // Gerencia quando o azul será aceso
-void PedSemaphore::handle_blue() {
+void SemaPed::handle_blue() {
   // Checa se o ciclo está no intervalo (22s - 32s) -> Últimos 10s do led vermelho do pedestre
   if (millis() - start_blue > 22000 && millis() - start_blue < 32000)
     blink_blue();
@@ -52,7 +52,7 @@ void PedSemaphore::handle_blue() {
 }
 
 // Faz o buzzer apitar numa frequência de 1Hz
-void PedSemaphore::blink_buzz() {
+void SemaPed::blink_buzz() {
   // Checa se o período chegou ao fim (T = 1s)
   if (millis() - period_buzz > 1000) {
     // Se o buzzer não estiver apitando, ele apita e a flag é ativada
@@ -71,7 +71,7 @@ void PedSemaphore::blink_buzz() {
 }
 
 // Gerencia quando o buzzer apita
-void PedSemaphore::handle_buzz() {
+void SemaPed::handle_buzz() {
   // Checa se o ciclo está no intervalo (22s - 32s) -> Últimos 10s do led vermelho do pedestre
   if (millis() - start_blue > 22000 && millis() - start_blue < 32000)
     blink_buzz();
@@ -81,7 +81,7 @@ void PedSemaphore::handle_buzz() {
 }
 
 // Reseta as variáveis do ciclo
-void PedSemaphore::restart() {
+void SemaPed::restart() {
   // Se o tempo total do ciclo (32s) tiver sido ultrapassado, reinicia ele
   if (millis() - start_green > 32000) {
     start_green = millis();
@@ -93,7 +93,7 @@ void PedSemaphore::restart() {
 }
 
 // Inicializar cada variável de início de cada cor
-PedSemaphore::PedSemaphore() {
+SemaPed::SemaPed() {
   start_green = millis();
   start_red = millis();
   start_blue = millis();
@@ -102,7 +102,7 @@ PedSemaphore::PedSemaphore() {
 }
 
 // Método geral que executa o ciclo do semáforo dos pedestres
-void PedSemaphore::work() {
+void SemaPed::work() {
   handle_green();
   handle_red();
   handle_blue();

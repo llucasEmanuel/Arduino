@@ -7,8 +7,8 @@
 LiquidCrystal lcd(RS, E, D4, D5, D6, D7);
 
 // Instanciação global dos objetos semaforos
-Semaphore sem_car;
-PedSemaphore sem_ped;
+SemaCar sema_car;
+SemaPed sema_ped;
 
 void setup() {
   // Mapemento das portas do semáforo de carro
@@ -32,6 +32,6 @@ void setup() {
 
 void loop() {
   // Execução do sistema de semáforos
-  sem_car.work();
-  sem_ped.work();
+  sema_car.work();
+  sema_ped.work();
 }
