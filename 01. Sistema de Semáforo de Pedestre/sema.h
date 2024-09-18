@@ -29,7 +29,7 @@ public:
 	Semaphore();
 
 	/* Método geral do funcionamento do semáforo */
-	virtual void work(LiquidCrystal lcd) = 0;
+	virtual void work(LiquidCrystal &lcd) = 0;
 };
 
 #endif
