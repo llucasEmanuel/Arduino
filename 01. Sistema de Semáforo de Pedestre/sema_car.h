@@ -13,7 +13,7 @@ private:
   // Gerencia o ciclo do led amarelo
   void handle_yellow();
 
-  void print_count(LiquidCrystal lcd);
+  void print_count(LiquidCrystal &lcd);
   
   // Gerencia o ciclo de cada um dos leds
   void handle_green() override;
@@ -28,7 +28,7 @@ public:
   SemaCar();
   
   // Método geral do funcionamento do semáforo
-  void work(LiquidCrystal lcd);
+  void work(LiquidCrystal &lcd) override;
 };
 
 #endif
