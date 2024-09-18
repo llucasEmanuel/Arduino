@@ -4,22 +4,33 @@
 
 // Gerencia quando o vermelho será aceso
 void SemaPed::handle_red() {
-  // Checa se o ciclo está no intervalo (0s - 12s)
-  if (millis() - start_red < 12000) 
-    digitalWrite(PED_RED, HIGH);
-  // Se sair desse intervalo, o vermelho desliga
+  // Checa se iniciou o ciclo
+  if (is_counting) {
+    // Checa se o ciclo está no intervalo (0s - 12s)
+    if (millis() - start_red < 12000) 
+      digitalWrite(PED_RED, HIGH);
+    // Se sair desse intervalo, o vermelho desliga
+    else
+      digitalWrite(PED_RED, LOW);    
+  }
+  // Se o botão não for pressionado, o sinal fica vermelho para sempre
   else
-    digitalWrite(PED_RED, LOW);    
+    digitalWrite(PED_RED, HIGH);
 }
 
 // Gerencia quando o verde será aceso
 void SemaPed::handle_green() {
-  // Checa se o ciclo está no intervalo (12s - 32s)
-  if (millis() - start_green > 12000 && millis() - start_green < 32000)
-    digitalWrite(PED_GREEN, HIGH);
-  // Se sair desse intervalo, o verde desliga
+  if (is_counting) {
+    // Checa se o ciclo está no intervalo (12s - 32s)
+    if (millis() - start_green > 12000 && millis() - start_green < 32000)
+      digitalWrite(PED_GREEN, HIGH);
+    // Se sair desse intervalo, o verde desliga
+    else
+      digitalWrite(PED_GREEN, LOW);  
+  }
+  // Se o botão não for pressionado, o sinal nunca fica verde
   else
-    digitalWrite(PED_GREEN, LOW);  
+    digitalWrite(PED_GREEN, LOW);
 }
 
 // Faz o azul piscar numa frequência de 2Hz
@@ -43,10 +54,14 @@ void SemaPed::blink_blue() {
 
 // Gerencia quando o azul será aceso
 void SemaPed::handle_blue() {
-  // Checa se o ciclo está no intervalo (22s - 32s) -> Últimos 10s do led vermelho do pedestre
-  if (millis() - start_blue > 22000 && millis() - start_blue < 32000)
-    blink_blue();
-  // Se sair desse intervalo, o azul desliga
+  if (is_counting) {
+    // Checa se o ciclo está no intervalo (22s - 32s) -> Últimos 10s do led vermelho do pedestre
+    if (millis() - start_blue > 22000 && millis() - start_blue < 32000)
+      blink_blue();
+    // Se sair desse intervalo, o azul desliga
+    else
+      digitalWrite(PED_BLUE, LOW);
+  }
   else
     digitalWrite(PED_BLUE, LOW);
 }
@@ -72,10 +87,14 @@ void SemaPed::blink_buzz() {
 
 // Gerencia quando o buzzer apita
 void SemaPed::handle_buzz() {
-  // Checa se o ciclo está no intervalo (22s - 32s) -> Últimos 10s do led vermelho do pedestre
-  if (millis() - start_blue > 22000 && millis() - start_blue < 32000)
-    blink_buzz();
-  // Se sair desse intervalo, o azul desliga
+  if (is_counting) {
+    // Checa se o ciclo está no intervalo (22s - 32s) -> Últimos 10s do led vermelho do pedestre
+    if (millis() - start_blue > 22000 && millis() - start_blue < 32000)
+      blink_buzz();
+    // Se sair desse intervalo, o azul desliga
+    else
+      noTone(BUZZ);
+  }
   else
     noTone(BUZZ);
 }
@@ -83,12 +102,13 @@ void SemaPed::handle_buzz() {
 // Reseta as variáveis do ciclo
 void SemaPed::restart() {
   // Se o tempo total do ciclo (32s) tiver sido ultrapassado, reinicia ele
-  if (millis() - start_green > 32000) {
+  if (is_counting && millis() - start_green > 32000) {
     start_green = millis();
     start_red = millis();
     start_blue = millis();
     period_blue = millis();
     period_buzz = millis();
+    is_counting = false;
   }
 }
 
@@ -105,16 +125,37 @@ SemaPed::SemaPed() {
 void SemaPed::check_button() {
   // Se o botão for apertado (Adicionar condicial para checar se resetou o ciclo)
   if (digitalRead(BUTTON) == 0 && !is_counting) {
-    SemaPed();
+    start_green = millis();
+    start_blue = millis();
+    start_red = millis();
     is_counting = true;
   }
 }
 
+void SemaPed::print_count(LiquidCrystal &lcd) {
+  unsigned long time_elapsed = millis() - start_green;
+  if (is_counting && time_elapsed < 10000) {
+    int num = time_elapsed/1000;
+    int count = 10 - num;
+    char msg[17];
+    lcd.setCursor(0, 0);
+    lcd.print("==FECHAR SINAL==");
+    lcd.setCursor(0, 1);
+    lcd.print("CONTAGEM:  ");
+    sprintf(msg, "%02ds", count);
+    lcd.print(msg);
+  }
+  else
+    lcd.clear();
+}
+
 // Método geral que executa o ciclo do semáforo dos pedestres
-void SemaPed::work(LiquidCrystal lcd) {
+void SemaPed::work(LiquidCrystal &lcd) {
+  check_button();
   handle_green();
   handle_red();
   handle_blue();
-  //handle_buzz();
+  handle_buzz();
+  //print_count(lcd);
   restart();
 }
