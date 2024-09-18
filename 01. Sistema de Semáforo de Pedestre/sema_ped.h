@@ -23,6 +23,8 @@ private:
   void blink_buzz();
   void handle_buzz();
 
+  void print_count(LiquidCrystal &lcd);
+
   void check_button() override;
 
 	// Gerencia o ciclo geral dos leds
@@ -36,7 +38,7 @@ public:
   SemaPed();
 
   // Método geral do funcionamento do semáforo
-  void work(LiquidCrystal lcd) override;
+  void work(LiquidCrystal &lcd) override;
 };
 
 #endif
