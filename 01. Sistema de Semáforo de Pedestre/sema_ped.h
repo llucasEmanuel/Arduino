@@ -2,6 +2,7 @@
 #define SEMA_PED_H
 
 #include "sema.h"
+#include "LiquidCrystal.h"
 
 // Classe que representa o semáforo dos pedestres
 class SemaPed : public Semaphore {
@@ -16,15 +17,17 @@ private:
   unsigned long period_buzz;
   bool is_high_buzz;
 
-	// Gerencia o ciclo geral dos leds
-  void handle_red() override;
-  void handle_green() override;
-
 	// Gerencia os últimos 10s do ciclos
   void blink_blue();
   void handle_blue();
   void blink_buzz();
   void handle_buzz();
+
+  void check_button() override;
+
+	// Gerencia o ciclo geral dos leds
+  void handle_red() override;
+  void handle_green() override;
 
   // Reinicia o ciclo
   void restart() override;
@@ -33,7 +36,7 @@ public:
   SemaPed();
 
   // Método geral do funcionamento do semáforo
-  void work() override;
+  void work(LiquidCrystal lcd) override;
 };
 
 #endif
