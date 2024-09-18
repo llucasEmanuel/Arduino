@@ -94,18 +94,27 @@ void SemaPed::restart() {
 
 // Inicializar cada variável de início de cada cor
 SemaPed::SemaPed() {
-  start_green = millis();
-  start_red = millis();
+  this->start_green = millis();
+  this->start_red = millis();
   start_blue = millis();
   period_blue = millis();
   period_buzz = millis();
+  is_counting = false;
+}
+
+void SemaPed::check_button() {
+  // Se o botão for apertado (Adicionar condicial para checar se resetou o ciclo)
+  if (digitalRead(BUTTON) == 0 && !is_counting) {
+    SemaPed();
+    is_counting = true;
+  }
 }
 
 // Método geral que executa o ciclo do semáforo dos pedestres
-void SemaPed::work() {
+void SemaPed::work(LiquidCrystal lcd) {
   handle_green();
   handle_red();
   handle_blue();
-  handle_buzz();
+  //handle_buzz();
   restart();
 }
