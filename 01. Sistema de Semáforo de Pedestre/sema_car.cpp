@@ -54,12 +54,17 @@ void SemaCar::handle_red() {
 }
 
 // Printa o contador no display LCD
-void SemaCar::print_count(LiquidCrystal lcd) {
-  if (is_counting && digitalRead(RED) == HIGH) {
+void SemaCar::print_count(LiquidCrystal &lcd) {
+  unsigned long time_elapsed = millis() - start_green;
+  if (is_counting && time_elapsed > 12000 && time_elapsed < 32000) {
+    int num = time_elapsed/1000;
+    int count = 32 - num;
+    char msg[17];
     lcd.setCursor(0, 0);
-    // Serial.println((millis() - start_green)/1000);
-    lcd.print(32 - (millis() - start_green)/1000);
-    // Arrumar uma forma de tirar o 0 da direita do número quando chega no 9
+    lcd.print("=TEMPO RESTANTE=");
+    lcd.setCursor(0, 1);
+    sprintf(msg, "     %02d seg     ", count);
+    lcd.print(msg);
   }
   else
     lcd.clear();
@@ -72,7 +77,7 @@ void SemaCar::restart() {
     start_green = millis();
     start_yellow = millis();
     start_red = millis();
-    /* if (is_counting) */ is_counting = false;
+    is_counting = false;
   }
 }
 
@@ -95,7 +100,7 @@ void SemaCar::check_button() {
 }
 
 // Método geral que executa o ciclo do semáforo dos carros
-void SemaCar::work(LiquidCrystal lcd) {
+void SemaCar::work(LiquidCrystal &lcd) {
   check_button();
   handle_green();
   handle_yellow();
