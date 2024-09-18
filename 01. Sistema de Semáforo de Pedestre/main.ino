@@ -32,6 +32,6 @@ void setup() {
 
 void loop() {
   // Execução do sistema de semáforos
-  sema_car.work();
-  sema_ped.work();
+  sema_car.work(lcd);
+  sema_ped.work(lcd);
 }
