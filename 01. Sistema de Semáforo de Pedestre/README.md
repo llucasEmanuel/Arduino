@@ -15,7 +15,7 @@ Esse projeto consiste em uma simulação de um sistema de semáforos real usando
 - 2 LEDs verdes
 - 2 LEDs vermelhos
 - 6 Resistores de 330 Ohms
-- 
+  
 ## Funcionamento
 ### Estado Padrão
 O estado inicial do sistema consiste no semáforo dos carros aberto (LED verde dos carros aceso) e o semáforo dos pedestres fechado (LED vermelho dos pedestres aceso). Pois, foi usada a lógica de que o semáforo dos carros só fecha se houver pedestres, ou seja, se o botão for apertado.
