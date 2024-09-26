@@ -6,7 +6,7 @@ Piano::Piano() {
     // Inicialização do dicionário
     notes_dict.set(C, base_c);
     notes_dict.set(C_SHARP, base_c_sharp);
-    notes_dict.set(D, base_c);
+    notes_dict.set(D, base_d);
     notes_dict.set(D_SHARP, base_d);
     notes_dict.set(E, base_e);
     notes_dict.set(F, base_f);
