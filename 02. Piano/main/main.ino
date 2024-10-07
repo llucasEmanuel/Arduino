@@ -2,14 +2,12 @@
 #include "notes.h"
 
 /* Porta do speaker */
-#define SPEAKER 50
+#define SPEAKER 52
 
 /* Portas dos botões de mudança de oitava */
-#define BTN_DOWN 48
-#define BTN_UP 52
+#define BTN_DOWN 50
+#define BTN_UP 48
 
-/* Porta do LED que brilha conforme a oitava da nota */
-#define LED 8
 
 /* Flags dos botões de frequência */
 bool pressed_up = false;
@@ -17,6 +15,7 @@ bool pressed_down = false;
 
 /* Variáveis auxiliares dos botões de nota */
 bool playing = false; // Flag que indica se alguma nota está sendo tocada
+int note_played = -1;
 unsigned long stadby_time;
 unsigned long play_timeout; // Indica quando a última nota foi tocada
 
@@ -47,7 +46,13 @@ void setup() {
   pinMode(BTN_DOWN, INPUT_PULLUP);
 
   // Mapeamento do LED
-  pinMode(LED, OUTPUT);
+  pinMode(LED_C, OUTPUT);
+  pinMode(LED_D, OUTPUT);
+  pinMode(LED_E, OUTPUT);
+  pinMode(LED_F, OUTPUT);
+  pinMode(LED_G, OUTPUT);
+  pinMode(LED_A, OUTPUT);
+  pinMode(LED_B, OUTPUT);
 
   // Inicialização do terminal (DEBUG)
   Serial.begin(9600);
@@ -55,7 +60,6 @@ void setup() {
 
 /* Execução do sistema */
 void loop() {
-
   //piano.play_idle_song(SPEAKER);
 
   // Checa se o botão de oitava acima foi pressionado
@@ -81,7 +85,12 @@ void loop() {
   // Se não estiver tocando
   if (!playing) {
     
-    playing = piano.play_note(SPEAKER);
+    note_played = piano.play_note(SPEAKER);
+    if (note_played != -1) {
+      playing = true;
+      Serial.println(note_played);
+    }
+    else playing = false;
 
     // Se estiver tocando
     if (playing) {
@@ -90,13 +99,13 @@ void loop() {
       sprintf(msg, "octave = %d", piano.get_octave());
       Serial.println(msg);
       // Acende o LED de acordo com a oitava atual
-      analogWrite(LED, 32 * piano.get_octave() - 1);
+      piano.turn_all_leds(true);
       // Reseta o timeout de tocar a nota (inicia a contagem de 200 ms)
       play_timeout = millis();
     }
     else {
       // Se não estiver tocando, desliga o LED
-      analogWrite(LED, 0);
+      piano.turn_all_leds(false);
     }
   }
   // Se estiver tocando
@@ -104,7 +113,7 @@ void loop() {
     // Checa se passou o timeout de 200ms
     if (millis() - play_timeout > 200) {
       // Pode tocar novamente e reseta o timeout
-      analogWrite(LED, 0);
+      piano.turn_all_leds(false);
       noTone(SPEAKER);
       playing = false;
       play_timeout = millis();
