@@ -13,7 +13,6 @@
 #define A_SHARP 32
 #define B       31
 
-
 /* Portas dos LEDs que brilham conforme a oitava da nota */
 // OBS: Os pinos 10 e 9 não suportam PWM
 #define LED_C 12

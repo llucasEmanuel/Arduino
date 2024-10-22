@@ -10,8 +10,6 @@
 
 class Piano {
 private:
-    // Estado do piano (IDLE ou READY)
-    int state;
     // Dicionário que mapeia as portas de cada botão acionado em 0 (Cinzas) a suas notas
     Dictionary<int, float> notes_dict;
     // Dicionário que mapeia os pinos das notas aos pinos dos leds correspondentes

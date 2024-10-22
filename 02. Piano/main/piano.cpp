@@ -68,7 +68,7 @@ int Piano::play_note(int speak_pin) {
     return note_played;
 }
 
-// Encontrar uma forma de interromper a música quando alguém começar a tocar -> USAR attachInterrupt() para interromper a musica sem precisar checar toda hora
+// Encontrar uma forma de interromper a música quando alguém começar a tocar
 void Piano::play_idle_song(int speak_pin) {
   // Flag que faz o octave_mult ir pra baixo quando chega no máximo
   bool go_back = false;
@@ -129,8 +129,4 @@ void Piano::manage_leds() {
 
 int Piano::get_led(int note) {
   return leds_dict.get(note);
-}
-
-void Piano::set_ready() {
-  state = READY;
 }

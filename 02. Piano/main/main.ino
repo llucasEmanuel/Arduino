@@ -22,6 +22,13 @@ int note_played = -1;
 unsigned long stadby_time;
 unsigned long play_timeout; // Indica quando a última nota foi tocada
 
+/* Estado do piano */
+// O estado será trocado para IDLE após passar um determinado tempo sem o usuário tocar
+int state;
+void set_ready() {
+  state = READY;
+}
+
 /* Instanciação global do objeto piano */
 Piano piano;
 
@@ -69,6 +76,8 @@ void setup() {
 
 /* Execução do sistema */
 void loop() {
+
+  Serial.println(state);
 
   // Checa se o botão de oitava acima foi pressionado
   if (digitalRead(BTN_UP) == 0 && !pressed_up) {
