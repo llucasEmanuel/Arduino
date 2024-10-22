@@ -4,8 +4,14 @@
 #include <Arduino.h>
 #include <Dictionary.h>
 
+/* Estados que o piano pode assumir */
+#define IDLE 0
+#define READY 1
+
 class Piano {
 private:
+    // Estado do piano (IDLE ou READY)
+    int state;
     // Dicionário que mapeia as portas de cada botão acionado em 0 (Cinzas) a suas notas
     Dictionary<int, float> notes_dict;
     // Dicionário que mapeia os pinos das notas aos pinos dos leds correspondentes

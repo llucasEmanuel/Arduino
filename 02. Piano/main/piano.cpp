@@ -130,3 +130,7 @@ void Piano::manage_leds() {
 int Piano::get_led(int note) {
   return leds_dict.get(note);
 }
+
+void Piano::set_ready() {
+  state = READY;
+}

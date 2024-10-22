@@ -2,11 +2,14 @@
 #include "notes.h"
 
 /* Porta do speaker */
-#define SPEAKER 52
+#define SPEAKER 42
 
 /* Portas dos botões de mudança de oitava */
 #define BTN_DOWN 13
 #define BTN_UP 22
+
+/* Pora do botão que troca o estado de IDLE para READY */
+#define BTN_STATE 20
 
 
 /* Flags dos botões de frequência */
@@ -44,6 +47,12 @@ void setup() {
   // Mapeamento dos botões de mudança de frequência
   pinMode(BTN_UP, INPUT_PULLUP);
   pinMode(BTN_DOWN, INPUT_PULLUP);
+
+  // Mapeamento do botão de mudança de frequência
+  pinMode(BTN_STATE, INPUT_PULLUP);
+
+  // BTN_STATE vai mudar (ou manter) o estado para READY quando apertado
+  attachInterrupt(digitalPinToInterrupt(BTN_STATE), set_ready, RISING);
 
   // Mapeamento do LED
   pinMode(LED_C, OUTPUT);
