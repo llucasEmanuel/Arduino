@@ -1,9 +1,9 @@
 /* Portas dos botões que representam cada nota */
-#define C       53  
-#define C_SHARP 52
-#define D       51
-#define D_SHARP 50
-#define E       49
+#define C       51  
+#define C_SHARP 50
+#define D       49
+#define D_SHARP 48
+#define E       47
 #define F       37
 #define F_SHARP 36
 #define G       35
@@ -37,10 +37,6 @@ const float base_a_sharp = 58.27;
 const float base_b = 61.74;
 
 // Layout dos botões
-/* C - C# - D | D# - E - F 
-  F# - G - G# | A - A# - B */
-
-// Layout de Cores (Vm = Vermelho, Am = Amarelo, Vd = Verde, Az = Azul)
-/* Vm - # - Am | # - Vd - Az
-    # - Vd - # | Am - # - Vm  */
+/* C   D   E   F   G   A   B
+     C#  D#      F#  G#  A#  */
     

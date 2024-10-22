@@ -60,7 +60,20 @@ void setup() {
 
 /* Execução do sistema */
 void loop() {
-  //piano.play_idle_song(SPEAKER);
+  
+  Serial.print(digitalRead(C));
+  Serial.print(digitalRead(C_SHARP));
+  Serial.print(digitalRead(D));
+  Serial.print(digitalRead(D_SHARP));
+  Serial.print(digitalRead(E));
+  Serial.print(digitalRead(F));
+  Serial.print(digitalRead(F_SHARP));
+  Serial.print(digitalRead(G));
+  Serial.print(digitalRead(G_SHARP));
+  Serial.print(digitalRead(A));
+  Serial.print(digitalRead(A_SHARP));
+  Serial.print(digitalRead(B));
+  Serial.print('\n');
 
   // Checa se o botão de oitava acima foi pressionado
   if (digitalRead(BTN_UP) == 0 && !pressed_up) {
@@ -88,6 +101,7 @@ void loop() {
     note_played = piano.play_note(SPEAKER);
     if (note_played != -1) {
       playing = true;
+      // Printa a porta do botão pressionado
       Serial.println(note_played);
     }
     else playing = false;
