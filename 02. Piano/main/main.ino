@@ -5,8 +5,8 @@
 #define SPEAKER 52
 
 /* Portas dos botões de mudança de oitava */
-#define BTN_DOWN 50
-#define BTN_UP 48
+#define BTN_DOWN 13
+#define BTN_UP 22
 
 
 /* Flags dos botões de frequência */

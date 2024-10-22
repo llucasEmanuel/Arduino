@@ -1,26 +1,26 @@
 /* Portas dos botões que representam cada nota */
-#define C       22  
-#define C_SHARP 26
-#define D       30
-#define D_SHARP 34
-#define E       38
-#define F       42
-#define F_SHARP 24
-#define G       28
-#define G_SHARP 32
-#define A       36
-#define A_SHARP 40
-#define B       44
+#define C       53  
+#define C_SHARP 52
+#define D       51
+#define D_SHARP 50
+#define E       49
+#define F       37
+#define F_SHARP 36
+#define G       35
+#define G_SHARP 34
+#define A       33
+#define A_SHARP 32
+#define B       31
 
 
 /* Portas dos LEDs que brilham conforme a oitava da nota */
-#define LED_C 13
-#define LED_D 12
-#define LED_E 11
-#define LED_F 10
-#define LED_G 9
-#define LED_A 8
-#define LED_B 7
+#define LED_C 11
+#define LED_D 10
+#define LED_E 9
+#define LED_F 7
+#define LED_G 4
+#define LED_A 3
+#define LED_B 2
 
 /* Frequência da primeira oitava de cada nota */
 const float base_c = 32.70;
