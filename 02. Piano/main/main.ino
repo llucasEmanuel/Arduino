@@ -60,20 +60,6 @@ void setup() {
 
 /* Execução do sistema */
 void loop() {
-  
-  Serial.print(digitalRead(C));
-  Serial.print(digitalRead(C_SHARP));
-  Serial.print(digitalRead(D));
-  Serial.print(digitalRead(D_SHARP));
-  Serial.print(digitalRead(E));
-  Serial.print(digitalRead(F));
-  Serial.print(digitalRead(F_SHARP));
-  Serial.print(digitalRead(G));
-  Serial.print(digitalRead(G_SHARP));
-  Serial.print(digitalRead(A));
-  Serial.print(digitalRead(A_SHARP));
-  Serial.print(digitalRead(B));
-  Serial.print('\n');
 
   // Checa se o botão de oitava acima foi pressionado
   if (digitalRead(BTN_UP) == 0 && !pressed_up) {
@@ -112,14 +98,8 @@ void loop() {
       char msg[51];
       sprintf(msg, "octave = %d", piano.get_octave());
       Serial.println(msg);
-      // Acende o LED de acordo com a oitava atual
-      piano.turn_all_leds(true);
       // Reseta o timeout de tocar a nota (inicia a contagem de 200 ms)
       play_timeout = millis();
-    }
-    else {
-      // Se não estiver tocando, desliga o LED
-      piano.turn_all_leds(false);
     }
   }
   // Se estiver tocando
@@ -127,11 +107,12 @@ void loop() {
     // Checa se passou o timeout de 200ms
     if (millis() - play_timeout > 200) {
       // Pode tocar novamente e reseta o timeout
-      piano.turn_all_leds(false);
       noTone(SPEAKER);
       playing = false;
       play_timeout = millis();
     }
   }
+  piano.manage_leds(); 
+
 }
 

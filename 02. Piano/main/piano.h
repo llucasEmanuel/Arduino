@@ -31,7 +31,8 @@ public:
     int play_note(int speak_pin);
     // Toca uma música ambiente e curta em loop enquanto ninguém toca
     void play_idle_song(int speak_pin); // Fica 1 min esperando alguém tocar, se não toca a música em loop
-    void turn_all_leds(bool);
+    // Gerencia quando os leds acendem e apagam
+    void manage_leds();
   
 
 };

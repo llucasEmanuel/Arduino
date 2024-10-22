@@ -1,4 +1,5 @@
 /* Portas dos botões que representam cada nota */
+// OBS: O pino 52 não funciona direito
 #define C       51  
 #define C_SHARP 50
 #define D       49
@@ -14,9 +15,10 @@
 
 
 /* Portas dos LEDs que brilham conforme a oitava da nota */
-#define LED_C 11
-#define LED_D 10
-#define LED_E 9
+// OBS: Os pinos 10 e 9 não suportam PWM
+#define LED_C 12
+#define LED_D 11
+#define LED_E 8
 #define LED_F 7
 #define LED_G 4
 #define LED_A 3
