@@ -11,6 +11,8 @@
 /* Pora do botão que troca o estado de IDLE para READY */
 #define BTN_STATE 20
 
+/* Tempo em millisegundos da duração do bounce */
+#define BOUNCE_TIME 30
 
 /* Flags dos botões de frequência */
 bool pressed_up = false;
@@ -24,9 +26,13 @@ unsigned long play_timeout; // Indica quando a última nota foi tocada
 
 /* Estado do piano */
 // O estado será trocado para IDLE após passar um determinado tempo sem o usuário tocar
-int state;
-void set_ready() {
-  state = READY;
+volatile int state;
+volatile unsigned long bounce_start = 0;
+void change_state() {
+  if (millis() > bounce_start) {
+    state = !state;
+    bounce_start = millis() + BOUNCE_TIME;
+  }
 }
 
 /* Instanciação global do objeto piano */
@@ -59,7 +65,7 @@ void setup() {
   pinMode(BTN_STATE, INPUT_PULLUP);
 
   // BTN_STATE vai mudar (ou manter) o estado para READY quando apertado
-  attachInterrupt(digitalPinToInterrupt(BTN_STATE), set_ready, RISING);
+  attachInterrupt(digitalPinToInterrupt(BTN_STATE), change_state, RISING);
 
   // Mapeamento do LED
   pinMode(LED_C, OUTPUT);
@@ -72,10 +78,18 @@ void setup() {
 
   // Inicialização do terminal (DEBUG)
   Serial.begin(9600);
+
+  // Estado do piano inicialmente setado para ser IDLE
+  state = IDLE;
 }
 
 /* Execução do sistema */
 void loop() {
+
+  while (state == IDLE) {
+    Serial.println("Playing idle song");
+    piano.play_idle_song(SPEAKER, state);
+  }
 
   Serial.println(state);
 

@@ -3,10 +3,12 @@
 
 #include <Arduino.h>
 #include <Dictionary.h>
+#include "song.h"
 
 /* Estados que o piano pode assumir */
 #define IDLE 0
 #define READY 1
+
 
 class Piano {
 private:
@@ -33,12 +35,12 @@ public:
     void octave_down();
     // Checa e toca a nota (Se tocar alguma nota retorna true, caso contrário retorna false)
     int play_note(int speak_pin);
-    // Toca uma música ambiente e curta em loop enquanto ninguém toca
-    void play_idle_song(int speak_pin); // Fica 1 min esperando alguém tocar, se não toca a música em loop
+    // Toca uma música sozinho quando está no estaod idle
+    void play_idle_song(int speak_pin, volatile int &state);
     // Gerencia quando os leds acendem e apagam
     void manage_leds();
-  
-
+    // Acende todos os leds
+    void turn_all_leds(bool);
 };
 
 #endif // PIANO_H

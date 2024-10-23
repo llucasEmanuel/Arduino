@@ -68,29 +68,8 @@ int Piano::play_note(int speak_pin) {
     return note_played;
 }
 
-// Encontrar uma forma de interromper a música quando alguém começar a tocar
-void Piano::play_idle_song(int speak_pin) {
-  // Flag que faz o octave_mult ir pra baixo quando chega no máximo
-  bool go_back = false;
-  // Valor somado ao octave_mult
-  int plus = 0;
-  while(true) {
-
-    Serial.println(plus);
-
-    if (go_back) plus--;
-    else plus++; 
-
-    tone(speak_pin, (octave_mult + plus) * base_a);
-    delay(800);
-    noTone(speak_pin);
-
-    if (octave_mult + plus > 8) go_back = true;
-    if (octave_mult + plus < 4) go_back = false;
-  }
-}
-
 void Piano::manage_leds() {
+  
   float brightness;
   brightness = (32 * get_octave()) - 1;
 
@@ -129,4 +108,107 @@ void Piano::manage_leds() {
 
 int Piano::get_led(int note) {
   return leds_dict.get(note);
+}
+
+void Piano::turn_all_leds(bool on) {
+  digitalWrite(LED_C, on);
+  digitalWrite(LED_D, on);
+  digitalWrite(LED_E, on);
+  digitalWrite(LED_F, on);
+  digitalWrite(LED_G, on);
+  digitalWrite(LED_A, on);
+  digitalWrite(LED_B, on);
+}
+
+void Piano::play_idle_song(int speak_pin, volatile int &state) {
+  int melody[] = {
+      REST,2, NOTE_D5,8, NOTE_B4,4, NOTE_D5,8, //1
+      NOTE_CS5,4, NOTE_D5,8, NOTE_CS5,4, NOTE_A4,2, 
+      REST,8, NOTE_A4,8, NOTE_FS5,8, NOTE_E5,4, NOTE_D5,8,
+      NOTE_CS5,4, NOTE_D5,8, NOTE_CS5,4, NOTE_A4,2, 
+      REST,4, NOTE_D5,8, NOTE_B4,4, NOTE_D5,8,
+      NOTE_CS5,4, NOTE_D5,8, NOTE_CS5,4, NOTE_A4,2, 
+
+      REST,8, NOTE_B4,8, NOTE_B4,8, NOTE_G4,4, NOTE_B4,8, //7
+      NOTE_A4,4, NOTE_B4,8, NOTE_A4,4, NOTE_D4,2,
+      REST,4, NOTE_D5,8, NOTE_B4,4, NOTE_D5,8,
+      NOTE_CS5,4, NOTE_D5,8, NOTE_CS5,4, NOTE_A4,2, 
+      REST,8, NOTE_A4,8, NOTE_FS5,8, NOTE_E5,4, NOTE_D5,8,
+      NOTE_CS5,4, NOTE_D5,8, NOTE_CS5,4, NOTE_A4,2, 
+
+      REST,4, NOTE_D5,8, NOTE_B4,4, NOTE_D5,8, //13
+      NOTE_CS5,4, NOTE_D5,8, NOTE_CS5,4, NOTE_A4,2, 
+      REST,8, NOTE_B4,8, NOTE_B4,8, NOTE_G4,4, NOTE_B4,8,
+      NOTE_A4,4, NOTE_B4,8, NOTE_A4,4, NOTE_D4,8, NOTE_D4,8, NOTE_FS4,8,
+      NOTE_E4,-1,
+      REST,8, NOTE_D4,8, NOTE_E4,8, NOTE_FS4,-1,
+
+      REST,8, NOTE_D4,8, NOTE_D4,8, NOTE_FS4,8, NOTE_F4,-1, //20
+      REST,8, NOTE_D4,8, NOTE_F4,8, NOTE_E4,-1, //end 1
+
+      //repeats from 1
+
+      REST,2, NOTE_D5,8, NOTE_B4,4, NOTE_D5,8, //1
+      NOTE_CS5,4, NOTE_D5,8, NOTE_CS5,4, NOTE_A4,2, 
+      REST,8, NOTE_A4,8, NOTE_FS5,8, NOTE_E5,4, NOTE_D5,8,
+      NOTE_CS5,4, NOTE_D5,8, NOTE_CS5,4, NOTE_A4,2, 
+      REST,4, NOTE_D5,8, NOTE_B4,4, NOTE_D5,8,
+      NOTE_CS5,4, NOTE_D5,8, NOTE_CS5,4, NOTE_A4,2, 
+
+      REST,8, NOTE_B4,8, NOTE_B4,8, NOTE_G4,4, NOTE_B4,8, //7
+      NOTE_A4,4, NOTE_B4,8, NOTE_A4,4, NOTE_D4,2,
+      REST,4, NOTE_D5,8, NOTE_B4,4, NOTE_D5,8,
+      NOTE_CS5,4, NOTE_D5,8, NOTE_CS5,4, NOTE_A4,2, 
+      REST,8, NOTE_A4,8, NOTE_FS5,8, NOTE_E5,4, NOTE_D5,8,
+      NOTE_CS5,4, NOTE_D5,8, NOTE_CS5,4, NOTE_A4,2, 
+
+      REST,4, NOTE_D5,8, NOTE_B4,4, NOTE_D5,8, //13
+      NOTE_CS5,4, NOTE_D5,8, NOTE_CS5,4, NOTE_A4,2, 
+      REST,8, NOTE_B4,8, NOTE_B4,8, NOTE_G4,4, NOTE_B4,8,
+      NOTE_A4,4, NOTE_B4,8, NOTE_A4,4, NOTE_D4,8, NOTE_D4,8, NOTE_FS4,8,
+      NOTE_E4,-1,
+      REST,8, NOTE_D4,8, NOTE_E4,8, NOTE_FS4,-1,
+
+      REST,8, NOTE_D4,8, NOTE_D4,8, NOTE_FS4,8, NOTE_F4,-1, //20
+      REST,8, NOTE_D4,8, NOTE_F4,8, NOTE_E4,8, //end 2
+      NOTE_E4,-2, NOTE_A4,8, NOTE_CS5,8, 
+      NOTE_FS5,8, NOTE_E5,4, NOTE_D5,8, NOTE_A5,-4,
+  };
+  // Metrônomo
+  int tempo = 140;
+  int notes = sizeof(melody) / sizeof(melody[0]) / 2;
+
+  int wholenote = (60000 * 4) / tempo;
+  int divider = 0;
+  int noteDuration = 0;
+  // iterate over the notes of the melody.
+  // Remember, the array is twice the number of notes (notes + durations)
+  for (int thisNote = 0; thisNote < notes * 2; thisNote = thisNote + 2) {
+
+    // calculates the duration of each note
+    divider = melody[thisNote + 1];
+    if (divider > 0) {
+      // regular note, just proceed
+      noteDuration = (wholenote) / divider;
+    } else if (divider < 0) {
+      // dotted notes are represented with negative durations!!
+      noteDuration = (wholenote) / abs(divider);
+      noteDuration *= 1.5; // increases the duration in half for dotted notes
+    }
+
+    // we only play the note for 90% of the duration, leaving 10% as a pause
+    turn_all_leds(true);
+    tone(speak_pin, melody[thisNote], noteDuration * 0.9);
+
+    // Wait for the specief duration before playing the next note.
+    delay(noteDuration);
+
+    // stop the waveform generation before the next note.
+    noTone(speak_pin);
+
+    if (state == READY) {
+      turn_all_leds(false);
+      return;
+    }
+  }
 }
