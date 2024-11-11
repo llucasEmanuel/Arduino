@@ -9,7 +9,6 @@
 #define IDLE 0
 #define READY 1
 
-
 class Piano {
 private:
     // Dicionário que mapeia as portas de cada botão acionado em 0 (Cinzas) a suas notas

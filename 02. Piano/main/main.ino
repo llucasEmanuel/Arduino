@@ -27,12 +27,9 @@ unsigned long play_timeout; // Indica quando a última nota foi tocada
 /* Estado do piano */
 // O estado será trocado para IDLE após passar um determinado tempo sem o usuário tocar
 volatile int state;
-volatile unsigned long bounce_start = 0;
+volatile unsigned long btn_start = 0;
 void change_state() {
-  if (millis() > bounce_start) {
-    state = !state;
-    bounce_start = millis() + BOUNCE_TIME;
-  }
+  state = !state;
 }
 
 /* Instanciação global do objeto piano */
@@ -80,13 +77,13 @@ void setup() {
   Serial.begin(9600);
 
   // Estado do piano inicialmente setado para ser IDLE
-  state = IDLE;
+  state = READY;
 }
 
 /* Execução do sistema */
 void loop() {
 
-  while (state == IDLE) {
+  if (state == IDLE) {
     Serial.println("Playing idle song");
     piano.play_idle_song(SPEAKER, state);
   }
